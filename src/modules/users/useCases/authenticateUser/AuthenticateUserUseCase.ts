@@ -1,8 +1,9 @@
+import "reflect-metadata";
 import { inject, injectable } from "tsyringe";
-import { compare } from 'bcryptjs';
-import { sign } from 'jsonwebtoken';
+import { compare } from "bcryptjs";
+import { sign } from "jsonwebtoken";
 
-import authConfig from '../../../../config/auth';
+import authConfig from "../../../../config/auth";
 
 import { IUsersRepository } from "../../repositories/IUsersRepository";
 import { IAuthenticateUserResponseDTO } from "./IAuthenticateUserResponseDTO";
@@ -16,14 +17,17 @@ interface IRequest {
 @injectable()
 export class AuthenticateUserUseCase {
   constructor(
-    @inject('UsersRepository')
-    private usersRepository: IUsersRepository,
+    @inject("UsersRepository")
+    private usersRepository: IUsersRepository
   ) {}
 
-  async execute({ email, password }: IRequest): Promise<IAuthenticateUserResponseDTO> {
+  async execute({
+    email,
+    password,
+  }: IRequest): Promise<IAuthenticateUserResponseDTO> {
     const user = await this.usersRepository.findByEmail(email);
 
-    if(!user) {
+    if (!user) {
       throw new IncorrectEmailOrPasswordError();
     }
 
@@ -35,7 +39,7 @@ export class AuthenticateUserUseCase {
 
     const { secret, expiresIn } = authConfig.jwt;
 
-    const token = sign({ user }, secret, {
+    const token = sign({ user }, "senhasupersecreta12345", {
       subject: user.id,
       expiresIn,
     });
@@ -44,9 +48,9 @@ export class AuthenticateUserUseCase {
       user: {
         id: user.id,
         name: user.name,
-        email: user.email
+        email: user.email,
       },
-      token
-    }
+      token,
+    };
   }
 }
