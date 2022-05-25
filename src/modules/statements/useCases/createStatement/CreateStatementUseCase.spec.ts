@@ -1,3 +1,4 @@
+import "reflect-metadata";
 import { CreateStatementUseCase } from "./CreateStatementUseCase";
 
 import { OperationType } from "../../entities/Statement";
